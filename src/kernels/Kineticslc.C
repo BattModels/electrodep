@@ -6,6 +6,7 @@
 /****************************************************************/
 
 #include "Kineticslc.h"
+#include <cmath>
 
 registerMooseObject("electrodepApp", Kineticslc);
 
@@ -49,7 +50,7 @@ Kineticslc::Kineticslc(const InputParameters & parameters)
 Real
 Kineticslc::computeQpResidual()
 {
-  Real epen = _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
+  Real epen = constfactor * _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
   return exp( -epen ) * _F[_qp] * _test[_i][_qp];
 }
 
@@ -68,13 +69,13 @@ Kineticslc::computeQpOffDiagJacobian(unsigned int jvar)
     return _dFv[_qp] * _phi[_j][_qp] * _test[_i][_qp];
   else if (jvar == _nx_var)
     {
-      Real epen = _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
-      return (_grad_phi[_j][_qp] * _grad_nx[_qp] + _grad_nx[_qp] * _grad_phi[_j][_qp]) * exp( -epen ) * _F[_qp] * _test[_i][_qp];
+      Real epen = constfactor * _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
+      return -constfactor * (_grad_phi[_j][_qp] * _grad_nx[_qp] + _grad_nx[_qp] * _grad_phi[_j][_qp]) * exp( -epen ) * _F[_qp] * _test[_i][_qp];
     }
   else if (jvar == _ny_var)
     {
-      Real epen = _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
-      return (_grad_phi[_j][_qp] * _grad_ny[_qp] + _grad_ny[_qp] * _grad_phi[_j][_qp]) * exp( -epen ) * _F[_qp] * _test[_i][_qp];
+      Real epen = constfactor * _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
+      return -constfactor * (_grad_phi[_j][_qp] * _grad_ny[_qp] + _grad_ny[_qp] * _grad_phi[_j][_qp]) * exp( -epen ) * _F[_qp] * _test[_i][_qp];
     }
   else
     return 0;

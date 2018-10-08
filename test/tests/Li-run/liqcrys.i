@@ -19,7 +19,7 @@
    # family= LAGRANGE
    [../]
   [./eta]
-   # order=SECOND
+  #order=SECOND
    # family= LAGRANGE
   [../]
   [./pot]
@@ -27,8 +27,10 @@
   # family= LAGRANGE
   [../]
   [./nlcx]
+  #order = SECOND
   [../]
   [./nlcy]
+  #order = SECOND
   [../]
   [./lambda]
   [../]
@@ -205,7 +207,7 @@ value = 0
     variable = lambda
     nlccomps    = 'nlcx nlcy'
 #    h_names = 'h1   h2'
-    epsilon = 1e-9
+    epsilon = 1e-2
   [../]
   [./w_dot]
     type = SusceptibilityTimeDerivative
@@ -295,7 +297,8 @@ value = 0
   type = GenericConstantMaterial
 #ul is the free energy density in the liquid phase
   prop_names  = 'kappa_op  M0     S1    S2     L    Ls       B   es       el  zz  A     ul    us    AA  dv  '
-  prop_values = '0.3   317.9   1000000 1.19   6.25   0.001  2.4  -13.8  2.631  0 1.0   0.0695 13.8   38.69 4.5'
+  prop_values = '0.3   317.9   1000000 1.19   6.25   0.1  2.4  -13.8  2.631  0 1.0   0.0695 13.8   38.69 4.5'
+# Ls value changed after ZJH suggested 100 times the value for limiting current i0
 #  M0 M1 Normalized diffusion coefficient for liquid and solid B normalized constant for nF
 #  M0=10^12*D    B=zF/(1000*R*T)   length 1 um, time 1s, energy is normalized by RT
 # t transference number D+=D/(n*(1-t)) D-=D/(n*t)
@@ -449,12 +452,13 @@ value = 0
 [Executioner]
   type = Transient
   scheme = bdf2
-  solve_type ='Newton'
+  verbose = True
+  solve_type = 'PJFNK'
   l_max_its = 50
-  l_tol = 1e-4
+  l_tol = 1e-5
   nl_max_its = 50
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-50
 # petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap'
 #  petsc_options_value = 'asm      31                  preonly      ilu          1'
 #  [./TimeStepper]
@@ -463,11 +467,11 @@ value = 0
 #    time_dt ='1e-5    1.e-3   1.e-2 2.e-2 '
 #     [../]
 #  type = IterationAdaptiveDT
-  dt=0.02
+  dt=0.005
 #  growth_factor = 1.5
 #  optimal_iterations = 7
 #  cutback_factor = 0.8
- end_time = 400
+ end_time = 800
 
 []
 

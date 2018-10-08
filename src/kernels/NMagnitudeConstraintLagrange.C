@@ -20,7 +20,7 @@ validParams<NMagnitudeConstraintLagrange>()
                              "This kernel acts on the lagrange "
                              "multiplier variable.");
   params.addRequiredCoupledVar("nlccomps", "nlc components, one for each dimension");
-  params.addParam<Real>("epsilon", 1e-9, "Shift factor to avoid a zero pivot");
+  params.addParam<Real>("epsilon", 1e-4, "Shift factor to avoid a zero pivot");
   return params;
 }
 
