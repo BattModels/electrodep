@@ -52,13 +52,13 @@ AnchorPenaltyScalar::AnchorPenaltyScalar(const InputParameters & parameters)
 Real
 AnchorPenaltyScalar::computeQpResidual()
 {
-  return -_penalty * 2.0 * _L[_qp] * ( _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1) ) * ( _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1) );
+  return _penalty * 2.0 * ( _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1) ) * ( _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1) );
 }
 
 Real
 AnchorPenaltyScalar::computeQpJacobian()
 {
-  return -_penalty * 2.0 * _L[_qp] * ( _nx[_qp] * _grad_phi[_j][_qp](0) + _ny[_qp] * _grad_phi[_j][_qp](1) ) * ( _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1) );
+  return _penalty * 2.0 * ( _nx[_qp] * _grad_phi[_j][_qp](0) + _ny[_qp] * _grad_phi[_j][_qp](1) ) * ( _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1) );
 }
 
 Real
@@ -70,7 +70,7 @@ AnchorPenaltyScalar::computeQpOffDiagJacobian(unsigned int jvar)
     const RealVectorValue vdottest = _phi[_j][_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
     const RealVectorValue ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
     const RealVectorValue ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
-    return 2.0 * _penalty * _L[_qp] * ( vdotu * ndottest + ndotu * vdottest );
+    return 2.0 * _penalty * ( vdotu * ndottest + ndotu * vdottest );
   }
 
   else if ( jvar == _ny_var )
@@ -79,7 +79,7 @@ AnchorPenaltyScalar::computeQpOffDiagJacobian(unsigned int jvar)
     const RealVectorValue vdottest = _nx[_qp] * _grad_test[_i][_qp](0) + _phi[_j][_qp] * _grad_test[_i][_qp](1);
     const RealVectorValue ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
     const RealVectorValue ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
-    return 2.0 * _penalty * _L[_qp] * ( vdotu * ndottest + ndotu * vdottest );
+    return 2.0 * _penalty * ( vdotu * ndottest + ndotu * vdottest );
   }
   
   else
