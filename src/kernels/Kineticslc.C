@@ -1,9 +1,3 @@
-/****************************************************************/
-/* MOOSE - Multiphysics Object Oriented Simulation Environment  */
-/*                                                              */
-/*          All contents are licensed under LGPL V2.1           */
-/*             See LICENSE for full restrictions                */
-/****************************************************************/
 
 #include "Kineticslc.h"
 #include <cmath>
@@ -15,18 +9,12 @@ InputParameters
 validParams<Kineticslc>()
 {
   InputParameters params = validParams<Kernel>();
-  params.addClassDescription(
-			     "Add in Kineticslc");
-  params.addRequiredCoupledVar(
-			       "cp", "coupled variable");
-  params.addRequiredCoupledVar(
-			       "cv", "coupled variable 2");
-  params.addRequiredCoupledVar(
-                               "nx", "coupled variable nx");
-  params.addRequiredCoupledVar(
-                               "ny", "coupled variable ny");
-  params.addRequiredParam<MaterialPropertyName>(
-						"f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
+  params.addClassDescription("Add in Kineticslc");
+  params.addRequiredCoupledVar("cp", "coupled variable");
+  params.addRequiredCoupledVar("cv", "coupled variable 2");
+  params.addRequiredCoupledVar("nx", "coupled variable nx");
+  params.addRequiredCoupledVar("ny", "coupled variable ny");
+  params.addRequiredParam<MaterialPropertyName>("f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
   return params;
 }
 
