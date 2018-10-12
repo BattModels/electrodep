@@ -66,19 +66,19 @@ AnchorPenaltyScalar::computeQpOffDiagJacobian(unsigned int jvar)
 {
   if ( jvar == _nx_var )
   {
-    const RealVectorValue vdotu = _phi[_j][_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
-    const RealVectorValue vdottest = _phi[_j][_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
-    const RealVectorValue ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
-    const RealVectorValue ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
+    const Real vdotu = _phi[_j][_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
+    const Real vdottest = _phi[_j][_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
+    const Real ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
+    const Real ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
     return 2.0 * _penalty * ( vdotu * ndottest + ndotu * vdottest );
   }
 
   else if ( jvar == _ny_var )
   {
-    const RealVectorValue vdotu = _nx[_qp] * _grad_u[_qp](0) + _phi[_j][_qp] * _grad_u[_qp](1);
-    const RealVectorValue vdottest = _nx[_qp] * _grad_test[_i][_qp](0) + _phi[_j][_qp] * _grad_test[_i][_qp](1);
-    const RealVectorValue ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
-    const RealVectorValue ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
+    const Real vdotu = _nx[_qp] * _grad_u[_qp](0) + _phi[_j][_qp] * _grad_u[_qp](1);
+    const Real vdottest = _nx[_qp] * _grad_test[_i][_qp](0) + _phi[_j][_qp] * _grad_test[_i][_qp](1);
+    const Real ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
+    const Real ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
     return 2.0 * _penalty * ( vdotu * ndottest + ndotu * vdottest );
   }
   
