@@ -35,12 +35,8 @@ protected:
   const MaterialProperty<Real> & _dFv;
   const MaterialProperty<Real> & _dF;
   /// Interfacial parameter
-  //All components of epen are in actual units                                                                                       
-  const float K = 1.0;
-  const float Rmol = 8.314;
-  const float T = 300.0;
-  const float m3permol = 1.0;
-  const float constfactor = 1/2.0 * K * m3permol * pow(10., -12)  / ( Rmol *  T );
+  //All components of epen are in actual units                                                  
+  Real _K, _Rmol, _T, _m3permol;
 };
 
 #endif // KINETICSLC_H
