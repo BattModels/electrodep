@@ -20,7 +20,9 @@ NMagnitudeVecConstraintLagrange::NMagnitudeVecConstraintLagrange(const InputPara
   : Kernel(parameters),
     _vec(coupledVectorValue("vec")),
     _epsilon(getParam<Real>("epsilon")),
-    _vec_id(coupled("vec"))
+    _vec_id(coupled("vec")),
+    _vec_var(*getVectorVar("vec", 0)),
+    _vec_phi(_assembly.phi(_vec_var))
 {
 }
 
@@ -42,7 +44,7 @@ Real
 NMagnitudeVecConstraintLagrange::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _vec_id)
-    return 2.0 * _phi[_j][_qp] * _vec[_qp] * _test[_i][_qp];
+    return 2.0 * _vec_phi[_j][_qp] * _vec[_qp] * _test[_i][_qp];
   else
     return 0.0;
 }
