@@ -29,7 +29,9 @@ protected:
 
   Real _epsilon;
   const VectorVariableValue & _vec;
-  unsigned _vec_id;
+  const unsigned int _vec_id;
+  VectorMooseVariable & _vec_var;
+  const VectorVariablePhiValue & _vec_phi;
 };
 
 #endif // NMAGNITUDEVECCONSTRAINTLAGRANGE_H

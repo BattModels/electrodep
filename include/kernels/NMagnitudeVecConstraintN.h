@@ -16,10 +16,12 @@ class NMagnitudeVecConstraintN : public VectorKernel
  protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   const VariableValue & _lambda;
-  unsigned int _lambda_var;
+  const unsigned _lambda_id;
+  MooseVariable & _lambda_var;
+  const VariablePhiValue & _standard_phi;
 };
 
 #endif /* NMAGNITUDEVECCONSTRAINTN_H */
