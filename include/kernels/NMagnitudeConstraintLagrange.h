@@ -31,9 +31,9 @@ public:
   NMagnitudeConstraintLagrange(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int) override;
 
   /// Switching function names
   unsigned int _num_comps;

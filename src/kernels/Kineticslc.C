@@ -10,6 +10,10 @@ validParams<Kineticslc>()
 {
   InputParameters params = validParams<Kernel>();
   params.addClassDescription("Add in Kineticslc");
+  params.addParam<Real>("K", 1.0, "energy penalty factor");
+  params.addParam<Real>("m3permol", 1.0, "energy penalty factor");
+  params.addParam<Real>("Rmol", 8.314, "energy penalty factor");
+  params.addParam<Real>("T", 1.0, "energy penalty factor");
   params.addRequiredCoupledVar("cp", "coupled variable");
   params.addRequiredCoupledVar("cv", "coupled variable 2");
   params.addRequiredCoupledVar("nx", "coupled variable nx");
@@ -20,6 +24,10 @@ validParams<Kineticslc>()
 
 Kineticslc::Kineticslc(const InputParameters & parameters)
   : DerivativeMaterialInterface<Kernel>(parameters),
+    _K(getParam<Real>("K")),
+    _m3permol(getParam<Real>("m3permol")),
+    _Rmol(getParam<Real>("Rmol")),
+    _T(getParam<Real>("T")),
     _cp_var(coupled("cp")),
     _cp(coupledValue("cp")),
     _cv_var(coupled("cv")),
@@ -38,6 +46,7 @@ Kineticslc::Kineticslc(const InputParameters & parameters)
 Real
 Kineticslc::computeQpResidual()
 {
+  Real constfactor = 1/2.0 * _K * _m3permol * pow(10., -12)  / ( _Rmol *  _T );
   Real epen = constfactor * _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
   return exp( -epen ) * _F[_qp] * _test[_i][_qp];
 }
@@ -45,12 +54,14 @@ Kineticslc::computeQpResidual()
 Real
 Kineticslc::computeQpJacobian()
 {
-  return _dFe[_qp]*_phi[_j][_qp]*_test[_i][_qp];
+  Real constfactor = 1/2.0 * _K * _m3permol * pow(10., -12)  / ( _Rmol *  _T );
+  return _dFe[_qp] * _phi[_j][_qp] * _test[_i][_qp];
 }
 
 Real
 Kineticslc::computeQpOffDiagJacobian(unsigned int jvar)
 {
+  Real constfactor = 1/2.0 * _K * _m3permol * pow(10., -12)  / ( _Rmol *  _T );
   if (jvar == _cp_var)
     return _dF[_qp] * _phi[_j][_qp] * _test[_i][_qp];
   else if (jvar == _cv_var)
