@@ -10,7 +10,7 @@ validParams<Kineticslc>()
 {
   InputParameters params = validParams<Kernel>();
   params.addClassDescription("Add in Kineticslc");
-  params.addParam<Real>("K", 1.0, "energy penalty factor");
+  params.addParam<Real>("K", 0.0, "energy penalty factor");
   params.addParam<Real>("m3permol", 1.0, "energy penalty factor");
   params.addParam<Real>("Rmol", 8.314, "energy penalty factor");
   params.addParam<Real>("T", 1.0, "energy penalty factor");
