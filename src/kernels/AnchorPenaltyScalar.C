@@ -21,7 +21,7 @@ validParams<AnchorPenaltyScalar>()
   params.addParam<MaterialPropertyName>("mob_name", "L", "The mobility used with the kernel");
   params.addRequiredCoupledVar("nx", "nx component ");
   params.addRequiredCoupledVar("ny", "ny component ");
-  params.addParam<Real>("penalty", 1.0, "Penalty scaling factor");
+  params.addParam<Real>("penalty", 0.0, "Penalty scaling factor");
   params.addCoupledVar("args", "Vector of nonlinear variable arguments this object depends on");
   params.addParam<bool>("variable_L",
                         true,
