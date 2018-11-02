@@ -21,15 +21,15 @@ validParams<Diff>()
 
 Diff::Diff(const InputParameters & parameters)
 : DerivativeMaterialInterface<Kernel>(parameters),
-	_cp_var(coupled("cp")),
-	_cp(coupledValue("cp")),
+  _cp_var(coupled("cp")),
+  _cp(coupledValue("cp")),
   _cv_var(coupled("cv")),
   _cv(coupledValue("cv")),
-	_grad_cp(coupledGradient("cp")),
+  _grad_cp(coupledGradient("cp")),
   _grad_cv(coupledGradient("cv")),
-	_Q(getMaterialProperty<Real>("Q_name")),
-	_QM(getMaterialProperty<Real>("QM_name")),
-	_dQ(getMaterialPropertyDerivative<Real>("Q_name", _var.name())),
+  _Q(getMaterialProperty<Real>("Q_name")),
+  _QM(getMaterialProperty<Real>("QM_name")),
+  _dQ(getMaterialPropertyDerivative<Real>("Q_name", _var.name())),
   _dQv(getMaterialPropertyDerivative<Real>("Q_name", getVar("cv", 0)->name())),
   _dQMv(getMaterialPropertyDerivative<Real>("QM_name", getVar("cv", 0)->name())),
   _dQp(getMaterialPropertyDerivative<Real>("Q_name", getVar("cp", 0)->name())),
@@ -53,12 +53,12 @@ Diff::computeQpJacobian()
 Real
 Diff::computeQpOffDiagJacobian(unsigned int jvar)
 {
-   if (jvar == _cp_var)
-	   return _QM[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp]+_dQp[_qp]*_grad_cv[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]
-     +_dQMp[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
-   else  if (jvar == _cv_var)
-   return _Q[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp]+_dQv[_qp]*_grad_cv[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]
-   +_dQMv[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
+  if (jvar == _cp_var)
+    return _QM[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp]+_dQp[_qp]*_grad_cv[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]
+      +_dQMp[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
+  else  if (jvar == _cv_var)
+    return _Q[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp]+_dQv[_qp]*_grad_cv[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]
+      +_dQMv[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
    else
-        return 0;
+     return 0;
 }

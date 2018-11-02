@@ -1,9 +1,3 @@
-/****************************************************************/
-/* MOOSE - Multiphysics Object Oriented Simulation Environment  */
-/*                                                              */
-/*          All contents are licensed under LGPL V2.1           */
-/*             See LICENSE for full restrictions                */
-/****************************************************************/
 
 #include "Electroneutrality.h"
 
@@ -15,7 +9,7 @@ validParams<Electroneutrality>()
 {
   InputParameters params = validParams<Kernel>();
   params.addClassDescription(
-      "Add in electronutrality");
+      "Add in electroneutrality");
   params.addParam<MaterialPropertyName>("Q_name","The mobility for electronutrality used with the kernel for phi");
   params.addParam<MaterialPropertyName>("QM_name","The mobility for electronutrality used with th kernel for c");
   params.addRequiredCoupledVar(
@@ -44,7 +38,7 @@ Electroneutrality::Electroneutrality(const InputParameters & parameters)
 Real
 Electroneutrality::computeQpResidual()
 {
-  return _Q[_qp]*_grad_u[_qp]*_grad_test[_i][_qp]+_QM[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp];
+  return _Q[_qp] * _grad_u[_qp] * _grad_test[_i][_qp] + _QM[_qp] * _grad_cp[_qp] * _grad_test[_i][_qp];
 }
 
 Real
@@ -52,15 +46,14 @@ Electroneutrality::computeQpJacobian()
 {
   return _Q[_qp]*_grad_phi[_j][_qp]* _grad_test[_i][_qp];
 }
+
 Real
 Electroneutrality::computeQpOffDiagJacobian(unsigned int jvar)
 {
    if (jvar == _cp_var)
-	     return _QM[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp]+_dQ[_qp]*_grad_u[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]
-     +_dQM[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
-    else if (jvar == _cv_var)
-        return  _dQv[_qp]*_grad_u[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]
-     +_dQMv[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
-     else
-        return 0;
+     return _QM[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp]+_dQ[_qp]*_grad_u[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp] +_dQM[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
+   else if (jvar == _cv_var)
+     return  _dQv[_qp]*_grad_u[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp]+_dQMv[_qp]*_grad_cp[_qp]*_grad_test[_i][_qp]*_phi[_j][_qp];
+   else
+     return 0;
 }
