@@ -36,7 +36,7 @@ protected:
   const MaterialProperty<Real> & _dF;
   /// Interfacial parameter
   //All components of epen are in actual units                                                  
-  Real _K, _Rmol, _T, _m3permol;
+  Real _constfactor;
 };
 
 #endif // KINETICSLC_H
