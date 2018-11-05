@@ -1,5 +1,5 @@
 # implementation of the grand-potential phase-field model based on M.Plapp PRE 84,031601(2011)+D.Cogswell PRE92, 011301(R) (2015)
-# w is the chemical potential, eta is the phase-field, pot is the electric potential, op is the overpotential
+#1;95;0c w is the chemical potential, eta is the phase-field, pot is the electric potential, op is the overpotential
 # add Bulter-Volmer equation with non-linear kinetics by ZJH Oct 2nd 2017
 # major modifs and liquid electrolyte with orientation order by Zeeshan Ahmad
 [Mesh]
@@ -19,6 +19,11 @@
 []
 
 [Variables]
+#  active = 'w eta pot nlc lambda'
+# Does not work with this below
+# active = 'w eta pot nlc'
+# Works with this below (without vector variable nlc)
+  active = 'w eta pot'
   [./w]
    # order=SECOND
    # family= LAGRANGE
@@ -33,31 +38,33 @@
   [../]
   [./nlc]
   family = LAGRANGE_VEC
+  order = FIRST
   [../]
   [./lambda]
   [../]
 []
 
-#[AuxVariables]
-#  [./epen]
-#  order = FIRST
-#  family = MONOMIAL
-#  [../]
-#  [./surfpen]
-#  order = FIRST
-#  family = MONOMIAL
-#  [../]
-#[]
+[AuxVariables]
+  active = ''
+  [./epen]
+  order = FIRST
+  family = MONOMIAL
+  [../]
+  [./surfpen]
+  order = FIRST
+  family = MONOMIAL
+  [../]
+[]
 
 [Functions]
 [./ic_func_eta]
-  #type = SmoothCircleIC
-  #  variable = eta
-  #  outvalue = 0.0
-  #  invalue = 1.0
-  #   y1=0
-  #   x1=75
-   #  radius=5
+#type = SmoothCircleIC
+#  variable = eta
+#  outvalue = 0.0
+#  invalue = 1.0
+#   y1=0
+#   x1=75
+#  radius=5
   type = ParsedFunction
   value = 0.5*(1.0-1.0*tanh((x-20)*2))
   [../]
@@ -69,14 +76,19 @@
   type = ParsedFunction
 #value=0.001*x-0.1
   value = -0.1*(1.0-tanh((x-20)*2)) 
-[../]
-  #[./ic_func_op]
+  [../]
+# [./ic_func_op]
 #type = ParsedFunction
 #value = 0
-  #[../]
+# [../]
 []
 
 [ICs]
+#  active = 'ic_nlc ic_eta ic_w ic_pot'
+# Does not work with this below
+#  active = 'ic_nlc ic_eta ic_w ic_pot'
+# Works with this below
+  active = 'ic_eta ic_w ic_pot'
   [./ic_nlc]
   type = VectorConstantIC
   variable = nlc
@@ -84,7 +96,7 @@
   y_value = 1
   z_value = 0
   [../]
-  [./eta]
+  [./ic_eta]
 #  type = SpecifiedSmoothCircleIC
 #  outvalue = 0.0
 #  invalue = 1.0
@@ -96,12 +108,12 @@
   type = FunctionIC
   function = ic_func_eta
   [../]
-  [./w]
+  [./ic_w]
   variable = w
   type = FunctionIC
   function = ic_func_c
   [../]
-  [./pot]
+  [./ic_pot]
   variable = pot
   type = FunctionIC
   function = ic_func_pot
@@ -109,6 +121,11 @@
 []
 
 [BCs]
+#  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot left_director right_director'
+# Does not work with this below
+#  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot right_director'
+#Works with this below
+  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot'
   [./bottom_eta]
   type = NeumannBC
   variable = 'eta'
@@ -172,20 +189,25 @@
   [../]
   [./left_director]
   type = LagrangeVecDirichletBC
-  variable = 'nlc'
+  variable = nlc
   boundary = 'left'
   values = '0 1 0'
   [../]
   [./right_director]
   type = LagrangeVecDirichletBC
-  variable = 'nlc'
+  variable = nlc
   boundary = 'right'
   values = '0 1 0'
   [../]
 []
 
 [Kernels]
-  [./nlc]
+#  active = 'nlc_diff nlcmag lagrange w_dot Diffusion1 Diffusion2 Noisew coupled_etadot elecN coupled_pos BVnlc AC_bulk AC_bulk_lc_penalty AC_int Noiseeta e_dot'
+# Does not work with this below
+#  active = 'nlc_diff w_dot Diffusion1 Diffusion2 Noisew coupled_etadot elecN coupled_pos AC_bulk AC_int Noiseeta e_dot'
+# Works with this
+  active = 'w_dot Diffusion1 Diffusion2 Noisew coupled_etadot elecN coupled_pos BV AC_bulk AC_int Noiseeta e_dot'
+  [./nlc_diff]
   type = VectorDiffusion #Take care of the minus sign if adding any other terms
   variable = nlc
   [../]
@@ -198,7 +220,7 @@
   type = NMagnitudeVecConstraintLagrange
   variable = lambda
   vec = nlc
-  epsilon = 1e-4
+  epsilon = 0.0001
   [../]
   [./w_dot]
   type = SusceptibilityTimeDerivative
@@ -247,13 +269,20 @@
   f_name = ft2
   args = 'eta'
   [../]
-  [./BV]
+  [./BVnlc]# with vecto nlc
   type = KineticslcVec
   variable = eta
   f_name = G
   cp=pot
   cv=eta
   n = 'nlc'
+  [../]
+  [./BV]#without vector nlc
+  type = Kinetics
+  variable = eta
+  f_name = G
+  cp=pot
+  cv=eta
   [../]
   [./AC_bulk]
   type = AllenCahn
@@ -270,7 +299,7 @@
   type = ACInterface
   variable = eta
   [../]
- [./Noiseeta]
+  [./Noiseeta]
   type = LangevinNoise
   variable = eta
   amplitude = 0.04
@@ -281,19 +310,20 @@
   [../]
 []
 
-#[AuxKernels]
-#  [./epen]
-#  type = EnergyPenaltyVec
-#  variable = epen
-#  n = nlc
-#  [../]
-#  [./surfpenalty]
-#  type = SurfacePenaltyVec
-#  variable = surfpen
-#  n = nlc
-#  eta = eta
-#  [../]
-#[]
+[AuxKernels]
+  active = ''
+  [./epen]
+  type = EnergyPenaltyVec
+  variable = epen
+  n = nlc
+  [../]
+  [./surfpenalty]
+  type = SurfacePenaltyVec
+  variable = surfpen
+  n = nlc
+  eta = eta
+  [../]
+[]
 
 [Materials]
   [./constants]
@@ -351,7 +381,7 @@
   fb_name = f2
   derivative_order = 2
   W = 2.64
-   # outputs = exodus
+# outputs = exodus
   [../]
   [./coupled_eta_function]
   type = DerivativeParsedMaterial
@@ -386,7 +416,7 @@
   args = 'eta w'
   derivative_order = 1
   material_property_names = 'M0 cl:=D[f1,w] h'
-  #  outputs = exodus
+#  outputs = exodus
   [../]
   [./Free]
   type = DerivativeParsedMaterial
@@ -395,7 +425,7 @@
   args = 'eta'
   function = 'B * eta * eta * (1 - eta) * (1 - eta)'
   derivative_order = 1
-  #outputs = exodus
+#outputs = exodus
   [../]
   [./Convection_coefficient]
   type = DerivativeParsedMaterial     #cn=h*(1-cs)+(1-h)*(1-2*cl)
@@ -404,12 +434,12 @@
   f_name = DN
   derivative_order = 1
   material_property_names = 'M0 cl:=D[f1,w] h RT Fconst'
-  #   outputs = exodus
+#   outputs = exodus
   [../]
   [./ButlerVolmer]
   type = DerivativeParsedMaterial
-  function = 'Ls * (exp(pot * Fconst/RT /2.) + cl * (1-h) * exp(-pot * Fconst/RT /2.)) * dh'
-  #    function = 'L * (op)'
+  function = 'Ls * (exp(pot * Fconst/ RT / 2.) + cl * (1-h) * exp(-pot * Fconst/ RT / 2.)) * dh'
+#    function = 'L * (op)'
   args = 'pot eta w'
   f_name = G
   derivative_order = 1
@@ -429,7 +459,7 @@
   args='eta w'
   material_property_names = 'h dFl:=D[f1,w]'
   function = '-dFl * (1-h)'
-   outputs = other
+  outputs = other
   [../]
   [./Le1]
   type = DerivativeParsedMaterial
