@@ -25,6 +25,3 @@ class NMagnitudeVecConstraintN : public VectorKernel
 };
 
 #endif /* NMAGNITUDEVECCONSTRAINTN_H */
-
-/*  LocalWords:  NMAGNITUDEVECCONSTRAINTN
- */
