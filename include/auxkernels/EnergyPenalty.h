@@ -9,9 +9,6 @@ class EnergyPenalty;
 template <>
 InputParameters validParams<EnergyPenalty>();
 
-/**
- * Coupled auxiliary value
- */
 class EnergyPenalty : public AuxKernel
 {
  public:
@@ -26,7 +23,7 @@ class EnergyPenalty : public AuxKernel
 
   const VariableGradient & _grad_nx;
   const VariableGradient & _grad_ny;
-  Real _K, _Rmol, _T, _m3permol;
+  Real _constfactor;
 };
 
 #endif // ENERGYPENALTY_H

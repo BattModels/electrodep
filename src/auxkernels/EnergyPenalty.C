@@ -10,10 +10,7 @@ InputParameters
 validParams<EnergyPenalty>()
 {
   InputParameters params = validParams<AuxKernel>();
-  params.addParam<Real>("K", 0.0, "energy penalty factor");
-  params.addParam<Real>("m3permol", 1.0, "energy penalty factor");
-  params.addParam<Real>("Rmol", 8.314, "energy penalty factor");
-  params.addParam<Real>("T", 1.0, "energy penalty factor");
+  params.addParam<Real>("constfactor", 0.0, "energy penalty factor");
   params.addRequiredCoupledVar("nx", "Coupled variable");
   params.addRequiredCoupledVar("ny", "Coupled variable");
   return params;
@@ -36,5 +33,5 @@ EnergyPenalty::EnergyPenalty(const InputParameters & parameters)
 Real
 EnergyPenalty::computeValue()
 {
-  return (1/2.0 * _K * _m3permol * pow(10., -12)  / ( _Rmol *  _T )) * _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
+  return _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
 }
