@@ -1,4 +1,3 @@
-
 #ifndef KINETICSLCVEC_H
 #define KINETICSLCVEC_H
 
@@ -16,9 +15,9 @@ public:
   KineticslcVec(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
   unsigned int _cp_var, _cv_var, _n_id;
   const VariableValue & _cp;
   const VariableValue & _cv;
@@ -29,8 +28,7 @@ protected:
   const MaterialProperty<Real> & _dFe;
   const MaterialProperty<Real> & _dFv;
   const MaterialProperty<Real> & _dF;
-  Real _K, _Rmol, _T, _m3permol;
-  //  const float constfactor = 1/2.0 * K * m3permol * pow(10., -12)  / ( Rmol *  T );
+  const Real _constfactor;
 };
 
 #endif // KINETICSLCVEC_H

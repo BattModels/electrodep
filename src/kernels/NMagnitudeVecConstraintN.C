@@ -1,4 +1,3 @@
-
 #include "NMagnitudeVecConstraintN.h"
 
 registerMooseObject("electrodepApp", NMagnitudeVecConstraintN);

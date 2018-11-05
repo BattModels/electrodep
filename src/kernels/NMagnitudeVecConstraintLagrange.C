@@ -37,7 +37,7 @@ NMagnitudeVecConstraintLagrange::computeQpResidual()
 Real
 NMagnitudeVecConstraintLagrange::computeQpJacobian()
 {
-  return _test[_i][_qp] * -_epsilon * _phi[_j][_qp];
+  return -_test[_i][_qp] * _epsilon * _phi[_j][_qp];
 }
 
 Real

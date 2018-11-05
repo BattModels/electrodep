@@ -28,15 +28,10 @@ public:
   AnchorPenaltyVec(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
-  //  RealGradient gradL();
-  /// the \f$ \nabla(L\psi) \f$ term
-  //RealGradient NablaLPsi();
-
-  /// Switching function names
   const VectorVariableValue & _n;
   unsigned int _n_id;
   VectorMooseVariable & _n_var;
