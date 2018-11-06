@@ -27,8 +27,10 @@ protected:
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int) override;
 
-  unsigned int _nx_var, _ny_var;
-  const VariableValue & _nx, & _ny;
+  unsigned int _nx_var;
+  const VariableValue & _nx;
+  unsigned int _ny_var;
+  const VariableValue & _ny;
   Real _epsilon;
 };
 

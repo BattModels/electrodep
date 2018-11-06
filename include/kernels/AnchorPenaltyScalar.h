@@ -33,11 +33,9 @@ protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
-
   //  RealGradient gradL();
   /// the \f$ \nabla(L\psi) \f$ term
   //RealGradient NablaLPsi();
-
   /// Switching function names
   const VariableValue & _nx;
   const VariableValue & _ny;
@@ -46,11 +44,8 @@ protected:
   //std::vector<const VariableValue *> _nlc_comp;
   const Real _penalty;
   //unsigned int _num_comps;
-
   /// number of non-linear variables in the problem
   const MaterialProperty<Real> & _L;
-
-    /// flag set if L is a function of non-linear variables in args
   const bool _variable_L;
 };
 

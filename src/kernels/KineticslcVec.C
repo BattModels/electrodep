@@ -20,19 +20,19 @@ validParams<KineticslcVec>()
 
 KineticslcVec::KineticslcVec(const InputParameters & parameters)
   : DerivativeMaterialInterface<Kernel>(parameters),
-    _constfactor(getParam<Real>("constfactor")),
     _cp_var(coupled("cp")),
-    _cp(coupledValue("cp")),
     _cv_var(coupled("cv")),
-    _cv(coupledValue("cv")),
     _n_id(coupled("n")),
+    _cp(coupledValue("cp")),
+    _cv(coupledValue("cv")),
     _grad_n(coupledVectorGradient("n")),
     _n_var(*getVectorVar("n", 0)),
     _vec_grad_phi(_assembly.gradPhi(_n_var)),
     _F(getMaterialProperty<Real>("f_name")),
     _dFe(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
     _dFv(getMaterialPropertyDerivative<Real>("f_name", getVar("cv", 0)->name())),
-    _dF(getMaterialPropertyDerivative<Real>("f_name", getVar("cp", 0)->name()))
+    _dF(getMaterialPropertyDerivative<Real>("f_name", getVar("cp", 0)->name())),
+  _constfactor(getParam<Real>("constfactor"))
 {
 }
 

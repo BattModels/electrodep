@@ -27,8 +27,8 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int);
 
-  Real _epsilon;
   const VectorVariableValue & _vec;
+  Real _epsilon;
   const unsigned int _vec_id;
   VectorMooseVariable & _vec_var;
   const VectorVariablePhiValue & _vec_phi;

@@ -22,18 +22,18 @@ validParams<KineticslcMat>()
 KineticslcMat::KineticslcMat(const InputParameters & parameters)
   : DerivativeMaterialInterface<Kernel>(parameters),
     _cp_var(coupled("cp")),
-    _cp(coupledValue("cp")),
     _cv_var(coupled("cv")),
-    _cv(coupledValue("cv")),
     _nx_var(coupled("nx")),
-    _grad_nx(coupledGradient("nx")),
     _ny_var(coupled("ny")),
+    _cp(coupledValue("cp")),
+    _cv(coupledValue("cv")),
+    _grad_nx(coupledGradient("nx")),
     _grad_ny(coupledGradient("ny")),
     _F(getMaterialProperty<Real>("f_name")),
     _dFe(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
-  _constfactor(getMaterialProperty<Real>("constfactor")),
-  _dFv(getMaterialPropertyDerivative<Real>("f_name", getVar("cv", 0)->name())),
-  _dF(getMaterialPropertyDerivative<Real>("f_name", getVar("cp", 0)->name()))  
+    _dFv(getMaterialPropertyDerivative<Real>("f_name", getVar("cv", 0)->name())),
+    _dF(getMaterialPropertyDerivative<Real>("f_name", getVar("cp", 0)->name())),
+  _constfactor(getMaterialProperty<Real>("constfactor"))
 {
 }
 

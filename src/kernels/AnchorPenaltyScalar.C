@@ -33,13 +33,13 @@ validParams<AnchorPenaltyScalar>()
 
 AnchorPenaltyScalar::AnchorPenaltyScalar(const InputParameters & parameters)
   : DerivativeMaterialInterface<Kernel>(parameters),
-    _L(getMaterialProperty<Real>("mob_name")),
-    _variable_L(getParam<bool>("variable_L")),
     _nx(coupledValue("nx")),
-    _nx_var(coupled("nx")),
     _ny(coupledValue("ny")),
+    _nx_var(coupled("nx")),
     _ny_var(coupled("ny")),
-    _penalty(getParam<Real>("penalty"))
+    _penalty(getParam<Real>("penalty")),
+    _L(getMaterialProperty<Real>("mob_name")),
+    _variable_L(getParam<bool>("variable_L"))
     //_nlc(_nlc),
 //    _number_of_nl_variables(_fe_problem.getNonlinearSystemBase().nVariables()),
 //    _j_eta(_number_of_nl_variables, -1),

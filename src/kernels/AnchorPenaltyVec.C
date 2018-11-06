@@ -24,13 +24,13 @@ validParams<AnchorPenaltyVec>()
 
 AnchorPenaltyVec::AnchorPenaltyVec(const InputParameters & parameters)
   : DerivativeMaterialInterface<Kernel>(parameters),
-    _L(getMaterialProperty<Real>("mob_name")),
-    _variable_L(getParam<bool>("variable_L")),
     _n(coupledVectorValue("n")),
     _n_id(coupled("n")),
     _n_var(*getVectorVar("n",0)),
     _vec_phi(_assembly.phi(_n_var)),
-    _penalty(getParam<Real>("penalty"))
+    _penalty(getParam<Real>("penalty")),
+    _L(getMaterialProperty<Real>("mob_name")),
+    _variable_L(getParam<bool>("variable_L"))
 {
 }
 
