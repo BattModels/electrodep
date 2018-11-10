@@ -10,49 +10,62 @@ validParams<Kineticslc>()
 {
   InputParameters params = validParams<Kernel>();
   params.addClassDescription("Add in Kineticslc");
-  params.addParam<Real>("constfactor", 0.0,"constfactor in liq crys, dimensions of m2");
-  params.addRequiredCoupledVar("cp", "coupled variable");
-  params.addRequiredCoupledVar("cv", "coupled variable 2");
+  params.addParam<Real>("constfactor", 0.0,"constfactor in liq crys, normalized");
+  params.addRequiredParam<MaterialPropertyName>("f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
+  params.addCoupledVar("args", "Vector of arguments of the f_name");
   params.addRequiredCoupledVar("nx", "coupled variable nx");
   params.addRequiredCoupledVar("ny", "coupled variable ny");
-  params.addRequiredParam<MaterialPropertyName>("f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
   return params;
 }
 
 Kineticslc::Kineticslc(const InputParameters & parameters)
-  : DerivativeMaterialInterface<Kernel>(parameters),
-    _cp_var(coupled("cp")),
-    _cv_var(coupled("cv")),
+  : DerivativeMaterialInterface<JvarMapKernelInterface<Kernel>>(parameters),
+    _F(getMaterialProperty<Real>("f_name")),
+    _dFdu(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
+    _dFdarg(_coupled_moose_vars.size()),
     _nx_var(coupled("nx")),
     _ny_var(coupled("ny")),
-    _cp(coupledValue("cp")),
-    _cv(coupledValue("cv")),
     _grad_nx(coupledGradient("nx")),
     _grad_ny(coupledGradient("ny")),
-    _F(getMaterialProperty<Real>("f_name")),
-    _dFe(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
-    _dFv(getMaterialPropertyDerivative<Real>("f_name", getVar("cv", 0)->name())),
-    _dF(getMaterialPropertyDerivative<Real>("f_name", getVar("cp", 0)->name())),
-  _constfactor(getParam<Real>("constfactor"))
+    _constfactor(getParam<Real>("constfactor"))
 {
+  for (unsigned int i = 0; i < _dFdarg.size(); ++i)
+    _dFdarg[i] = &getMaterialPropertyDerivative<Real>("f_name", _coupled_moose_vars[i]->name());
 }
 
 Real
 Kineticslc::computeQpResidual()
 {
-  Real epen = _constfactor * _grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp];
-  return exp( -epen ) * _F[_qp] * _test[_i][_qp];
+  Real epen = _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
+  return exp(-epen) * _F[_qp] * _test[_i][_qp];
 }
 
 Real
 Kineticslc::computeQpJacobian()
 {
-  return _dFe[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+  Real epen = _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
+  return exp(-epen) * _dFdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
 }
 
 Real
 Kineticslc::computeQpOffDiagJacobian(unsigned int jvar)
 {
+  Real epen = _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
+  if (jvar == _nx_var)
+    //    return 0;
+    return -2.0 * _constfactor * _grad_nx[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _F[_qp] * _test[_i][_qp];
+  else if (jvar == _ny_var)
+    //    return 0;
+    return -2.0 * _constfactor * _grad_ny[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _F[_qp] * _test[_i][_qp];
+  else
+    //    return -_constfactor * (_grad_phi[_j][_qp] * _grad_nx[_qp] + _grad_nx[_qp] * _grad_phi[_j][_qp]) * \
+  //      exp( -epen ) * _F[_qp] * _test[_i][_qp];
+    {
+      const unsigned int cvar = mapJvarToCvar(jvar);
+      return exp(-epen) * (*_dFdarg[cvar])[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+    }
+
+  /*
   if (jvar == _cp_var)
     return _dF[_qp] * _phi[_j][_qp] * _test[_i][_qp];
   else if (jvar == _cv_var)
@@ -69,4 +82,5 @@ Kineticslc::computeQpOffDiagJacobian(unsigned int jvar)
     }
   else
     return 0;
+  */
 }
