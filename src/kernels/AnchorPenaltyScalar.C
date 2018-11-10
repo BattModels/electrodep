@@ -72,7 +72,6 @@ AnchorPenaltyScalar::computeQpOffDiagJacobian(unsigned int jvar)
     const Real ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
     return 2.0 * _penalty * ( vdotu * ndottest + ndotu * vdottest );
   }
-
   else if ( jvar == _ny_var )
   {
     const Real vdotu = _nx[_qp] * _grad_u[_qp](0) + _phi[_j][_qp] * _grad_u[_qp](1);
@@ -80,8 +79,7 @@ AnchorPenaltyScalar::computeQpOffDiagJacobian(unsigned int jvar)
     const Real ndottest = _nx[_qp] * _grad_test[_i][_qp](0) + _ny[_qp] * _grad_test[_i][_qp](1);
     const Real ndotu = _nx[_qp] * _grad_u[_qp](0) + _ny[_qp] * _grad_u[_qp](1);
     return 2.0 * _penalty * ( vdotu * ndottest + ndotu * vdottest );
-  }
-  
+  } 
   else
     return 0.0;
 }
