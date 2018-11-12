@@ -1,6 +1,7 @@
 
 #include "Kineticslc.h"
 #include <cmath>
+#include <math.h>
 
 registerMooseObject("electrodepApp", Kineticslc);
 
