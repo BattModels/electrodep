@@ -21,31 +21,31 @@ validParams<Kineticslc>()
 
 Kineticslc::Kineticslc(const InputParameters & parameters)
   : DerivativeMaterialInterface<JvarMapKernelInterface<Kernel>>(parameters),
-    _F(getMaterialProperty<Real>("f_name")),
-    _dFdu(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
-    _dFdarg(_coupled_moose_vars.size()),
+    _Fbv(getMaterialProperty<Real>("f_name")),
+    _dFbvdu(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
+    _dFbvdarg(_coupled_moose_vars.size()),
     _nx_var(coupled("nx")),
     _ny_var(coupled("ny")),
     _grad_nx(coupledGradient("nx")),
     _grad_ny(coupledGradient("ny")),
     _constfactor(getParam<Real>("constfactor"))
 {
-  for (unsigned int i = 0; i < _dFdarg.size(); ++i)
-    _dFdarg[i] = &getMaterialPropertyDerivative<Real>("f_name", _coupled_moose_vars[i]->name());
+  for (unsigned int i = 0; i < _dFbvdarg.size(); ++i)
+    _dFbvdarg[i] = &getMaterialPropertyDerivative<Real>("f_name", _coupled_moose_vars[i]->name());
 }
 
 Real
 Kineticslc::computeQpResidual()
 {
   Real epen = _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
-  return exp(-epen) * _F[_qp] * _test[_i][_qp];
+  return exp(-epen) * _Fbv[_qp] * _test[_i][_qp];
 }
 
 Real
 Kineticslc::computeQpJacobian()
 {
   Real epen = _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
-  return exp(-epen) * _dFdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+  return exp(-epen) * _dFbvdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
 }
 
 Real
@@ -54,16 +54,16 @@ Kineticslc::computeQpOffDiagJacobian(unsigned int jvar)
   Real epen = _constfactor * (_grad_nx[_qp] * _grad_nx[_qp] + _grad_ny[_qp] * _grad_ny[_qp]);
   if (jvar == _nx_var)
     //    return 0;
-    return -2.0 * _constfactor * _grad_nx[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _F[_qp] * _test[_i][_qp];
+    return -2.0 * _constfactor * _grad_nx[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _Fbv[_qp] * _test[_i][_qp];
   else if (jvar == _ny_var)
     //    return 0;
-    return -2.0 * _constfactor * _grad_ny[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _F[_qp] * _test[_i][_qp];
+    return -2.0 * _constfactor * _grad_ny[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _Fbv[_qp] * _test[_i][_qp];
   else
     //    return -_constfactor * (_grad_phi[_j][_qp] * _grad_nx[_qp] + _grad_nx[_qp] * _grad_phi[_j][_qp]) * \
   //      exp( -epen ) * _F[_qp] * _test[_i][_qp];
     {
       const unsigned int cvar = mapJvarToCvar(jvar);
-      return exp(-epen) * (*_dFdarg[cvar])[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+      return exp(-epen) * (*_dFbvdarg[cvar])[_qp] * _phi[_j][_qp] * _test[_i][_qp];
     }
 
   /*

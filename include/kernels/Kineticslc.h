@@ -26,9 +26,9 @@ protected:
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
   
-  const MaterialProperty<Real> & _F;
-  const MaterialProperty<Real> & _dFdu;
-  std::vector<const MaterialProperty<Real> *> _dFdarg;
+  const MaterialProperty<Real> & _Fbv;
+  const MaterialProperty<Real> & _dFbvdu;
+  std::vector<const MaterialProperty<Real> *> _dFbvdarg;
   unsigned int  _nx_var, _ny_var;
   const VariableGradient & _grad_nx;
   const VariableGradient & _grad_ny;
