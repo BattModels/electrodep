@@ -26,11 +26,12 @@
   [./eta]
 #order=SECOND
 # family= LAGRANGE
+#  scaling = 1e+1
   [../]
   [./pot]
   #order=SECOND
   # family= LAGRANGE
-#  scaling = 1e+2
+#  scaling = 1e+1
   [../]
   [./nlcx]
   order = FIRST
@@ -516,12 +517,12 @@
   scheme = bdf2
   verbose = True
   solve_type = 'Newton'
-  dtmin = 1e-6
+  dtmin = 1e-8
   l_max_its = 50
   l_tol = 1e-4
   nl_max_its = 50
   nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-8
+  nl_abs_tol = 1e-9
   petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap'
   petsc_options_value = 'asm      31                  preonly      lu          4'
 #  [./TimeStepper]
@@ -535,6 +536,7 @@
 #  optimal_iterations = 7
 #  cutback_factor = 0.8
   end_time = 800
+#  num_steps = 2
 []
 
 [Outputs]
@@ -543,12 +545,12 @@
   execute_on = 'TIMESTEP_END'
   [./other]        # creates input_other.e
   type = Exodus
-  interval = 20
+  interval = 1
   [../]
   [./checkpt]
   type = Checkpoint
   num_files = 2
-  interval = 50
+  interval = 20
   [../]
 []
 
