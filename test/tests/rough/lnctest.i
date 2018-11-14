@@ -30,17 +30,17 @@
   [./pot]
   #order=SECOND
   # family= LAGRANGE
-  scaling = 1e+2
+#  scaling = 1e+2
   [../]
   [./nlcx]
   order = FIRST
   family = LAGRANGE
-  scaling = 1e+06
+#  scaling = 1e+06
   [../]
   [./nlcy]
   order = FIRST
   family = LAGRANGE
-  scaling = 1e+06
+#  scaling = 1e+06
   [../]
   [./lambda]
   [../]
@@ -81,13 +81,13 @@
   [./nlcx]
   variable = nlcx
   type = RandomIC
-  min = 0
+  min = -1
   max = 1
   [../]
   [./nlcy]
   variable = nlcy
   type = RandomIC
-  min = 0
+  min = -1
   max = 1
   [../]
   [./eta]
@@ -111,7 +111,7 @@
 []
 
 [BCs]
-  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot right_directorx right_directorx right_directory'
+  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot right_directorx right_directory'
   [./bottom_eta]
   type = NeumannBC
   variable = 'eta'
@@ -200,7 +200,7 @@
 []
 
 [Kernels]
-  active = 'nlcx nlcy nlcxmag nlcymag lagrange w_dot Diffusion1 Diffusion2 poteqn coupled_pot BVnlc coupled_etadot AC_bulk AC_int e_dot AC_bulk_lc_penalty'
+  active = 'nlcx nlcy nlcxmag nlcymag lagrange w_dot Diffusion1 Diffusion2 poteqn coupled_pot coupled_etadot BVnlc AC_bulk AC_int e_dot AC_bulk_lc_penalty'
   [./nlcx]
   type = Diffusion #Take care of the minus sign if adding any other terms
   variable = nlcx
@@ -237,6 +237,13 @@
   type = MatDiffusion
   variable = w
   D_name = D
+  args = 'eta w'
+  [../]
+  [./Diff2]
+  type = MatDiffusion
+  variable = w
+  args = 'eta w'
+  D_name = DN
   [../]
   [./Diffusion2]
   type = Diff
@@ -245,7 +252,7 @@
   Q_name = zz
   QM_name = DN
   cp = pot
-#args = 'w'
+ #args = 'w'
   [../]
   [./Noisew]
   type = LangevinNoise
@@ -282,7 +289,7 @@
   [./BVnlc]
   type = Kineticslc
   variable = eta
-  f_name = G
+  f_name = GG
   args = 'pot w'
   nx = 'nlcx'
   ny = 'nlcy'
@@ -336,7 +343,7 @@
   type = GenericConstantMaterial
 #ul is the free energy density in the liquid phase
   prop_names  = 'kappa_op  M0    S1   S2      CL     L        Ls        B      es      el     zz    ul         us   dv   RT    Fconst      K     Liplusm3permol ft2'
-  prop_values = '0.33    319.7  1e7  1.19  14.4   6.318   2.695e-3  2.64  -13.64   2.598    0   6.854e-2   13.64  5.34  0.987   9.649e-5  3.957e-7  0.05022 7.422e-3'
+  prop_values = '0.33    319.7  1e7  1.19  14.4   6.318   1.347e-2  2.64  -13.64   2.598    0   6.854e-2   13.64  5.34  0.987   9.649e-5  3.957e-7  0.05022 7.422e-3'
 # Ls value changed after ZJH suggested 100 times the value for limiting current i0
 #  M0 M1 Normalized diffusion coefficient for liquid and solid B normalized constant for nF
 #  M0=10^12*D    B=zF/(1000*R*T)   length 1 um, time 1s, energy is normalized by RT
@@ -392,7 +399,7 @@
   function = '-(cs * dv - cl) * dh'  # in this code cs=-cs h=eta dh=1
   args = 'w eta'
   f_name = ft
-  material_property_names = 'dh:=D[h,eta] h dv cs:=D[f2,w] cl:=D[f1,w]'
+  material_property_names = 'dh:=D[h(eta),eta] h(eta) dv cs:=D[f2(w),w] cl:=D[f1(w),w]'
   derivative_order = 1
   [../]
   [./susceptibility]
@@ -402,15 +409,15 @@
   f_name = chi
   derivative_order = 1
 #outputs = exodus
-  material_property_names = 'h dv d2F1:=D[f1,w,w] d2F2:=D[f2,w,w]'
+  material_property_names = 'h(eta) dv d2F1:=D[f1(w),w,w] d2F2:=D[f2(w),w,w]'
   [../]
   [./Diffusion_coefficient]
   type = DerivativeParsedMaterial     #cn=h*(1-cs)+(1-h)*(1-2*cl)
   function = '-M0 * cl * (1 - h)'  #c is -c, removed 1-h extra factor which was there for convergence
   f_name = D
   args = 'eta w'
-  derivative_order = 1
-  material_property_names = 'M0 cl:=D[f1,w] h'
+  derivative_order = 2
+  material_property_names = 'M0 cl:=D[f1,w] h(eta)'
   #  outputs = exodus
   [../]
   [./Free]
@@ -418,8 +425,8 @@
   f_name = FF
   material_property_names = 'B'
   args = 'eta'
-  function = 'B * eta * eta * (1 - eta) * (1 - eta)'
-  derivative_order = 1
+  function = 'B*eta*eta*(1-eta)*(1-eta)'
+  derivative_order = 2
   #outputs = exodus
   [../]
   [./Convection_coefficient]
@@ -428,17 +435,17 @@
   args = 'eta w'
   f_name = DN
   derivative_order = 1
-  material_property_names = 'M0 cl:=D[f1,w] h RT Fconst'
+  material_property_names = 'M0 cl:=D[f1(w),w] h(eta) RT Fconst'
   #   outputs = exodus
   [../]
   [./ButlerVolmer]
   type = DerivativeParsedMaterial
-  function = 'Ls * (exp(pot * Fconst/RT /2.) + cl * (1-h) * exp(-pot * Fconst/RT /2.)) * dh'
+  function = 'Ls*(exp(pot*Fconst/RT/2)+cl*(1-h)*exp(-pot*Fconst/RT/2))*dh'
   #    function = 'L * (op)'
-  args = 'pot eta w'
-  f_name = G
+  args = 'pot w eta'
+  f_name = GG
   derivative_order = 1
-  material_property_names = 'Ls dh:=D[h,eta] h cl:=D[f1,w] RT Fconst'
+  material_property_names = 'Ls dh:=D[h(eta),eta] h(eta) cl:=D[f1(w),w] RT Fconst'
 #  outputs = exodus
   [../]
   [./eta]
@@ -452,7 +459,7 @@
   type = ParsedMaterial
   f_name = c
   args='eta w'
-  material_property_names = 'h dFl:=D[f1,w]'
+  material_property_names = 'h(eta) dFl:=D[f1(w),w]'
   function = '-dFl * (1-h)'
 #   outputs = exodus
   [../]
@@ -460,8 +467,8 @@
   type = DerivativeTwoPhaseMaterial
   f_name = Le1
   eta = 'eta'
-  fa_name = S1
-  fb_name = S2
+  fa_name = S2
+  fb_name = S1
   #outputs = exodus
   derivative_order = 2
   [../]
@@ -488,7 +495,7 @@
   type = Transient
   scheme = bdf2
   verbose = True
-  solve_type = 'PJFNK'
+  solve_type = 'Newton'
   dtmin = 1e-6
   l_max_its = 50
   l_tol = 1e-4
