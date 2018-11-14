@@ -339,8 +339,8 @@
   [./constants]
   type = GenericConstantMaterial
 #ul is the free energy density in the liquid phase
-  prop_names  = 'kappa_op  M0    S1   S2      CL     L        Ls        B      es      el     zz    ul         us   dv   RT    Fconst      K     Liplusm3permol ft2'
-  prop_values = '0.33    319.7  1e7  1.19  14.4   6.318   1.347e-1  2.64  -13.64   2.598    0   6.854e-2   13.64  5.34  0.987   9.649e-5  3.957e-7  0.05022 7.422e-3'
+  prop_names  = 'kappa_op  M0    S1   S2      CL     L        Ls        B      es      el     zz    ul         us   dv   RT    Fconst      K     Liplusm3permol ft2  stdconc'
+  prop_values = '0.33    319.7  1e7  1.19  14.4   6.318   1.347e-1  2.64  -13.64   2.598    0   6.854e-2   13.64  5.34  0.987   9.649e-5  3.957e-7  0.05022 7.422e-3  0.067083438'
 # Ls value changed after ZJH suggested 100 times the value for limiting current i0
 #  M0 M1 Normalized diffusion coefficient for liquid and solid B normalized constant for nF
 #  M0=10^12*D    B=zF/(1000*R*T)   length 1 um, time 1s, energy is normalized by RT
@@ -437,12 +437,12 @@
   [../]
   [./ButlerVolmer]
   type = DerivativeParsedMaterial
-  function = 'Ls * (exp(pot * Fconst/RT /2.) + cl * (1-h) * exp(-pot * Fconst/RT /2.)) * dh'
+  function = 'Ls * (exp(pot * Fconst/RT /2.) + cl * (1-h) / stdconc * exp(-pot * Fconst/RT /2.)) * dh'
   #    function = 'L * (op)'
   args = 'pot w'
   f_name = G
   derivative_order = 1
-  material_property_names = 'Ls dh:=D[h(eta),eta] h(eta) cl:=D[f1(w),w] RT Fconst'
+  material_property_names = 'Ls dh:=D[h(eta),eta] h(eta) cl:=D[f1(w),w] RT Fconst stdconc'
   outputs = other
   [../]
   [./eta]
