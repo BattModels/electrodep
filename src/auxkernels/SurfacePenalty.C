@@ -22,7 +22,8 @@ SurfacePenalty::SurfacePenalty(const InputParameters & parameters)
     // We can couple in a value from one of our kernels with a call to coupledValueAux
     _nx(coupledValue("nx")),
     _ny(coupledValue("ny")),
-    _grad_eta(coupledGradient("eta"))
+    _grad_eta(coupledGradient("eta")),
+    _penalty(getParam<Real>("penalty"))
 {
 }
 
