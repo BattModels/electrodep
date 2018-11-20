@@ -20,7 +20,8 @@ EnergyPenalty::EnergyPenalty(const InputParameters & parameters)
   : AuxKernel(parameters),
     // We can couple in a value from one of our kernels with a call to coupledValueAux
     _grad_nx(coupledGradient("nx")),
-    _grad_ny(coupledGradient("ny"))
+    _grad_ny(coupledGradient("ny")),
+    _constfactor(getParam<Real>("constfactor"))
 {
 }
 

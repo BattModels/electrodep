@@ -19,7 +19,8 @@ validParams<SurfacePenaltyVec>()
 SurfacePenaltyVec::SurfacePenaltyVec(const InputParameters & parameters)
   : AuxKernel(parameters),
     _n(coupledVectorValue("n")),
-    _grad_eta(coupledGradient("eta"))
+    _grad_eta(coupledGradient("eta")),
+    _penalty(getParam<Real>("penalty"))
 {
 }
 
