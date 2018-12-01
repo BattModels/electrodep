@@ -9,7 +9,7 @@ class KineticslcVec;
 template <>
 InputParameters validParams<KineticslcVec>();
 
-class KineticslcVec: public DerivativeMaterialInterface<Kernel>
+class KineticslcVec: public DerivativeMaterialInterface<JvarMapKernelInterface<Kernel>>
 {
 public:
   KineticslcVec(const InputParameters & parameters);
@@ -18,16 +18,14 @@ protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
-  unsigned int _cp_var, _cv_var, _n_id;
-  const VariableValue & _cp;
-  const VariableValue & _cv;
+  unsigned int _n_id;
+
+  const MaterialProperty<Real> & _Fbv;
+  const MaterialProperty<Real> & _dFbvdu;
+  std::vector<const MaterialProperty<Real> *> _dFbvdarg;
   const VectorVariableGradient & _grad_n;
   VectorMooseVariable & _n_var;
   const VectorVariablePhiGradient & _vec_grad_phi;
-  const MaterialProperty<Real> & _F;
-  const MaterialProperty<Real> & _dFe;
-  const MaterialProperty<Real> & _dFv;
-  const MaterialProperty<Real> & _dF;
   const Real _constfactor;
 };
 

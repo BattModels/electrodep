@@ -37,8 +37,8 @@ protected:
   VectorMooseVariable & _n_var;
   const VectorVariablePhiValue & _vec_phi;
   const Real _penalty;
-  const MaterialProperty<Real> & _L;
-  const bool _variable_L;
+  //  const MaterialProperty<Real> & _L;
+  //  const bool _variable_L;
 };
 
 #endif // ANCHORPENALTYVEC_H

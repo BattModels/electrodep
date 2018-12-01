@@ -3,7 +3,6 @@
 #define NMAGNITUDEVECCONSTRAINTLAGRANGE_H
 
 #include "Kernel.h"
-//*#include "DerivativeMaterialInterface.h"
 #include "NonlinearSystem.h"
 
 // Forward Declarations
@@ -23,9 +22,9 @@ public:
   NMagnitudeVecConstraintLagrange(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int) override;
 
   const VectorVariableValue & _vec;
   Real _epsilon;
