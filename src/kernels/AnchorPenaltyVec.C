@@ -10,15 +10,15 @@ validParams<AnchorPenaltyVec>()
   InputParameters params = validParams<Kernel>();
   params.addClassDescription(
       "Penalty kernel for the energy penalty due to liquid crystal.");
-  params.addParam<MaterialPropertyName>("mob_name", "L", "The mobility used with the kernel");
+  //  params.addParam<MaterialPropertyName>("mob_name", "L", "The mobility used with the kernel");
   params.addRequiredCoupledVar("n", "Vector whose magnitude is to be constrained to 1");
   params.addParam<Real>("penalty", 0.0, "Penalty scaling factor");
-  params.addCoupledVar("args", "Vector of nonlinear variable arguments this object depends on");
-  params.addParam<bool>("variable_L",
-                        true,
-                        "The mobility is a function of any MOOSE variable (if "
-                        "this is set to false L must be constant over the "
-                        "entire domain!)");
+  //  params.addCoupledVar("args", "Vector of nonlinear variable arguments this object depends on");
+  //  params.addParam<bool>("variable_L",
+  //                        true,
+  //                        "The mobility is a function of any MOOSE variable (if "
+  //                        "this is set to false L must be constant over the "
+  //                        "entire domain!)");
   return params;
 }
 
@@ -28,9 +28,9 @@ AnchorPenaltyVec::AnchorPenaltyVec(const InputParameters & parameters)
     _n_id(coupled("n")),
     _n_var(*getVectorVar("n",0)),
     _vec_phi(_assembly.phi(_n_var)),
-    _penalty(getParam<Real>("penalty")),
-    _L(getMaterialProperty<Real>("mob_name")),
-    _variable_L(getParam<bool>("variable_L"))
+    _penalty(getParam<Real>("penalty"))
+    //    _L(getMaterialProperty<Real>("mob_name")),
+    //    _variable_L(getParam<bool>("variable_L"))
 {
 }
 
