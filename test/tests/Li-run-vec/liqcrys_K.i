@@ -23,12 +23,12 @@
   [./w]
 # order=SECOND
 # family= LAGRANGE
-  scaling = 1e2
+  scaling = 1e+3
   [../]
   [./eta]
 #  order=SECOND
 #  family= HERMITE
-  scaling = 1e2
+  scaling = 1e+4
   [../]
   [./pot]
 # order=SECOND

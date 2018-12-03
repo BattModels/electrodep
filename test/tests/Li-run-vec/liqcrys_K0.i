@@ -19,20 +19,16 @@
 []
 
 [Variables]
-#  active = 'w eta pot nlc lambda'
-# Does not work with this below
-  active = 'w eta pot nlc lambda'
-# Works with this below (without vector variable nlc)
-#  active = 'w eta pot'
+  active = 'w eta pot'
   [./w]
 # order=SECOND
 # family= LAGRANGE
-  scaling = 1e2
+  scaling = 1e+3
   [../]
   [./eta]
 #order=SECOND
 # family= LAGRANGE
-  scaling = 1e3
+  scaling = 1e+4
   [../]
   [./pot]
 # order=SECOND
@@ -47,7 +43,7 @@
 []
 
 [AuxVariables]
-  active = 'epen surfpen'
+  active = ''
   [./epen]
   order = FIRST
   family = MONOMIAL
@@ -79,7 +75,7 @@
 []
 
 [ICs]
-  active = 'ic_nlc ic_eta ic_w ic_pot lambda_ic'
+  active = 'ic_eta ic_w ic_pot'
   [./ic_nlc]
   type = VectorConstantIC
   variable = nlc
@@ -110,7 +106,7 @@
 []
 
 [BCs]
-  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot right_director'
+  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot'
   [./bottom_eta]
   type = NeumannBC
   variable = 'eta'
@@ -186,7 +182,7 @@
 []
 
 [Kernels]
-  active = 'nlc_diff nlc_mag lagrange w_dot Diffusion1 Diffusion2 poteqn coupled_pot BVnlc coupled_etadot AC_bulk AC_int AC_bulk_lc_penalty Noiseeta e_dot'
+  active =  'w_dot Diffusion1 Diffusion2 poteqn coupled_pot BV coupled_etadot AC_bulk AC_int Noiseeta e_dot'
   [./nlc_diff]
   type = VectorDiffusion #Take care of the minus sign when adding any other terms
   variable = nlc
@@ -208,7 +204,7 @@
   vec = nlc
   epsilon = 1.0e-4
   [../]
-    [./w_dot]
+  [./w_dot]
   type = SusceptibilityTimeDerivative
   variable = w
   f_name = chi
@@ -274,12 +270,11 @@
   args = 'pot w'
   n = 'nlc'
   [../]
-  [./BV]#without vector nlc
+  [./BV]
   type = Kinetics
   variable = eta
   f_name = G
-  cp=pot
-  cv=eta
+  args = 'pot w'
   [../]
   [./AC_bulk]
   type = AllenCahn
@@ -308,7 +303,7 @@
 []
 
 [AuxKernels]
-  active = 'epen surfpenalty'
+  active = ''
   [./epen]
   type = EnergyPenaltyVec
   variable = epen
