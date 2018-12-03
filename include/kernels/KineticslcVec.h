@@ -3,6 +3,7 @@
 
 #include "Kernel.h"
 #include "DerivativeMaterialInterface.h"
+#include "JvarMapInterface.h"
 
 class KineticslcVec;
 
