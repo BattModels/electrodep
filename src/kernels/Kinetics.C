@@ -1,11 +1,6 @@
-/****************************************************************/
-/* MOOSE - Multiphysics Object Oriented Simulation Environment  */
-/*                                                              */
-/*          All contents are licensed under LGPL V2.1           */
-/*             See LICENSE for full restrictions                */
-/****************************************************************/
 
 #include "Kinetics.h"
+#include <cmath>
 
 registerMooseObject("electrodepApp", Kinetics);
 
@@ -14,48 +9,37 @@ InputParameters
 validParams<Kinetics>()
 {
   InputParameters params = validParams<Kernel>();
-  params.addClassDescription(
-      "Add in Kinetics");
-  params.addRequiredCoupledVar(
-      "cp", "coupled variable");
-  params.addRequiredCoupledVar(
-          "cv", "coupled variable 2");
-  params.addRequiredParam<MaterialPropertyName>(
-          "f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
+  params.addClassDescription("Add in Kinetics");
+  params.addRequiredParam<MaterialPropertyName>("f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
+  params.addCoupledVar("args", "Vector of arguments of the f_name");
   return params;
 }
 
 Kinetics::Kinetics(const InputParameters & parameters)
-: DerivativeMaterialInterface<Kernel>(parameters),
-	_cp_var(coupled("cp")),
-	_cp(coupledValue("cp")),
-  _cv_var(coupled("cv")),
-	_cv(coupledValue("cv")),
-  _F(getMaterialProperty<Real>("f_name")),
-  _dFe(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
-  _dFv(getMaterialPropertyDerivative<Real>("f_name", getVar("cv", 0)->name())),
-	_dF(getMaterialPropertyDerivative<Real>("f_name", getVar("cp", 0)->name()))
+  : DerivativeMaterialInterface<JvarMapKernelInterface<Kernel>>(parameters),
+    _Fbv(getMaterialProperty<Real>("f_name")),
+    _dFbvdu(getMaterialPropertyDerivative<Real>("f_name", _var.name())),
+    _dFbvdarg(_coupled_moose_vars.size())
 {
+  for (unsigned int i = 0; i < _dFbvdarg.size(); ++i)
+    _dFbvdarg[i] = &getMaterialPropertyDerivative<Real>("f_name", _coupled_moose_vars[i]->name());
 }
 
 Real
 Kinetics::computeQpResidual()
 {
-  return _F[_qp]*_test[_i][_qp];
+  return _Fbv[_qp] * _test[_i][_qp];
 }
 
 Real
 Kinetics::computeQpJacobian()
 {
-  return _dFe[_qp]*_phi[_j][_qp]*_test[_i][_qp];
+  return _dFbvdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
 }
+
 Real
 Kinetics::computeQpOffDiagJacobian(unsigned int jvar)
 {
-   if (jvar == _cp_var)
-	   return _dF[_qp]*_phi[_j][_qp]*_test[_i][_qp];
-    else if (jvar == _cv_var)
-      return _dFv[_qp]*_phi[_j][_qp]*_test[_i][_qp];
-	else
-     return 0;
+  const unsigned int cvar = mapJvarToCvar(jvar);
+  return (*_dFbvdarg[cvar])[_qp] * _phi[_j][_qp] * _test[_i][_qp];     
 }

@@ -1,21 +1,17 @@
-/****************************************************************/
-/* MOOSE - Multiphysics Object Oriented Simulation Environment  */
-/*                                                              */
-/*          All contents are licensed under LGPL V2.1           */
-/*             See LICENSE for full restrictions                */
-/****************************************************************/
+
 #ifndef KINETICS_H
 #define KINETICS_H
 
 #include "Kernel.h"
 #include "DerivativeMaterialInterface.h"
+#include "JvarMapInterface.h"
 
 class Kinetics;
 
 template <>
 InputParameters validParams<Kinetics>();
 
-class Kinetics: public DerivativeMaterialInterface<Kernel>
+class Kinetics: public DerivativeMaterialInterface<JvarMapKernelInterface<Kernel>>
 {
 public:
   Kinetics(const InputParameters & parameters);
@@ -24,16 +20,10 @@ protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
-  unsigned int _cp_var;
-  const VariableValue & _cp;
-  unsigned int _cv_var;
-  const VariableValue & _cv;
-  /// Mobility
-  const MaterialProperty<Real> & _F;
-  const MaterialProperty<Real> & _dFe;
-  const MaterialProperty<Real> & _dFv;
-  const MaterialProperty<Real> & _dF;
-  /// Interfacial parameter
+
+  const MaterialProperty<Real> & _Fbv;
+  const MaterialProperty<Real> & _dFbvdu;
+  std::vector<const MaterialProperty<Real> *> _dFbvdarg;
 };
 
 #endif // KINETICS_H
