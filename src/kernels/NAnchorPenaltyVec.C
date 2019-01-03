@@ -9,7 +9,7 @@ validParams<NAnchorPenaltyVec>()
   InputParameters params = validParams<VectorKernel>();
   params.addClassDescription("Penalty kernel for the anchor energy penalty due to liquid crystal vec");
   params.addRequiredCoupledVar("eta", "gradient of this function used in penalty");
-  params.addParam<Real>("penalty", 0.0, "Penalty scaling factor");
+  params.addParam<Real>("penalty", "Penalty scaling factor");
   return params;
 }
 
