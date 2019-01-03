@@ -10,7 +10,7 @@ validParams<KineticslcVec>()
 {
   InputParameters params = validParams<Kernel>();
   params.addClassDescription("Add in KineticslcVec");
-  params.addParam<Real>("constfactor", 0.0, "energy penalty factor for lc");
+  params.addParam<Real>("constfactor", 0.0, "energy penalty factor for lc, includes 1/2 due to alpham - alphaa"); 
   params.addRequiredCoupledVar("n", "coupled director of the liquid crystal");
   params.addRequiredParam<MaterialPropertyName>("f_name", "Base name of the free energy function F defined in a DerivativeParsedMaterial");
   params.addCoupledVar("args", "Vector of arguments of the f_name");
@@ -35,7 +35,7 @@ KineticslcVec::KineticslcVec(const InputParameters & parameters)
 Real
 KineticslcVec::computeQpResidual()
 {
-  Real epen = _constfactor * _grad_n[_qp].contract(_grad_n[_qp]);
+  Real epen = _constfactor * _grad_n[_qp].contract(_grad_n[_qp]); 
   return exp( -epen ) * _Fbv[_qp] * _test[_i][_qp];
 }
 
