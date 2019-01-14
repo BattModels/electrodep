@@ -4,8 +4,7 @@ import numpy as np
 #import matplotlib.pyplot as plt
 from glob import glob
 
-
-def time_transf(f, tstart=550):
+def time_transf(f, tstart=550, Xval=150):
     nc = netCDF4.Dataset(f)
     print('Read exodus file '+f+'\n')
     eta_on_nodes = nc.variables['vals_nod_var3']
@@ -17,7 +16,7 @@ def time_transf(f, tstart=550):
     X = nc.variables['coordx']
     Y = nc.variables['coordy']
     time_whole = nc.variables['time_whole'][:]
-    Xval = 150 #time of phase transf at x=Xval                                                                   
+#    Xval = 150 #time of phase transf at x=Xval                                                                   
     for t in range(550, nsteps):
         print('At tstep={}'.format(t))
         line_inds = np.where(X[:]==Xval)[0]
