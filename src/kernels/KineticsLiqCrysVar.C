@@ -50,7 +50,8 @@ KineticsLiqCrysVar::KineticsLiqCrysVar(const InputParameters & parameters)
 Real
 KineticsLiqCrysVar::computeQpResidual()
 {
-  Real gradderiv =  -2.0 * (_n[_qp] * _gradeta[_qp]) * 0.0 - 2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]); //There is a divergence in 1st term, not implemented yet
+  Real divn = _grad_n[_qp].tr();
+  Real gradderiv =  -2.0 * (_n[_qp] * _gradeta[_qp]) * divn - 2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]); //There is a divergence in 1st term, not implemented yet
   Real epen = (- _dhdu[_qp]) * (_constfactor * _grad_n[_qp].contract(_grad_n[_qp]) + _penaltyconstfactor * (_n[_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * gradderiv;
   return exp( epen ) * _Fbv[_qp] * _test[_i][_qp];
 }
@@ -58,7 +59,8 @@ KineticsLiqCrysVar::computeQpResidual()
 Real
 KineticsLiqCrysVar::computeQpJacobian()
 {
-  Real gradderiv =  -2.0 * (_n[_qp] * _gradeta[_qp]) * 0.0 -2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]); //There is a divergence in 1st term, not implemented yet                                                               
+  Real divn = _grad_n[_qp].tr();
+  Real gradderiv =  -2.0 * (_n[_qp] * _gradeta[_qp]) * divn -2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]); //There is a divergence in 1st term, not implemented yet                                                               
   Real epen = (- _dhdu[_qp]) * (_constfactor * _grad_n[_qp].contract(_grad_n[_qp]) + _penaltyconstfactor * (_n[_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * gradderiv;
   Real pepenpuj = -_d2hdu2[_qp] * _phi[_j][_qp] * (_constfactor * _grad_n[_qp].contract(_grad_n[_qp]) + _penaltyconstfactor * (_n[_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp])) - _dhdu[_qp] * _phi[_j][_qp] * _penaltyconstfactor *  gradderiv;
   return pepenpuj * exp(epen) * _Fbv[_qp] * _test[_i][_qp] + exp( epen ) * _dFbvdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
@@ -69,18 +71,20 @@ KineticsLiqCrysVar::computeQpJacobian()
 Real
 KineticsLiqCrysVar::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  Real gradderiv =  -2.0 * (_n[_qp] * _gradeta[_qp]) * 0.0 - 2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]); //There is a divergence in 1st term, not implemented yet                                                                     
+  Real divn = _grad_n[_qp].tr();
+  Real gradderiv =  -2.0 * (_n[_qp] * _gradeta[_qp]) * divn - 2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]); //There is a divergence in 1st term, not implemented yet                                                                     
   Real epen = (- _dhdu[_qp]) * (_constfactor * _grad_n[_qp].contract(_grad_n[_qp]) + _penaltyconstfactor * (_n[_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * gradderiv;
   if (jvar == _n_id)
     {
-      Real pgradderivpn = -2.0 * (_n_phi[_j][_qp] * _gradeta[_qp]) * 0.0 - 2.0 * _n_phi[_j][_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]) - 2.0 * _n[_qp] * ( _n_grad_phi[_j][_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n_phi[_j][_qp]);
+      Real divphi = _n_grad_phi[_j][_qp].tr();
+      Real pgradderivpn = -2.0 * (_n_phi[_j][_qp] * _gradeta[_qp]) * divn - 2.0 * (_n[_qp] * _gradeta[_qp]) * divphi  - 2.0 * _n_phi[_j][_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]) - 2.0 * _n[_qp] * ( _n_grad_phi[_j][_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n_phi[_j][_qp]);
       Real pepenpn = (- _dhdu[_qp]) * ( 2.0 * _constfactor * _n_grad_phi[_j][_qp].contract(_grad_n[_qp]) + 2.0 * _penaltyconstfactor * (_n_phi[_j][_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * pgradderivpn;
       return pepenpn * exp( epen ) * _Fbv[_qp] * _test[_i][_qp];
       //return 2.0 * (1.0 - _h[_qp]) * _constfactor * ( _vec_grad_phi[_j][_qp].contract(_grad_n[_qp]) ) * exp( epen ) * _Fbv[_qp] * _test[_i][_qp];
     }
   else if(jvar == _gradeta_id)
     {
-      Real pgradderivpgradeta = -2.0 * (_n[_qp] * _gradeta_phi[_j][_qp]) * 0.0 - 2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta_phi[_j][_qp] + _gradeta_grad_phi[_j][_qp] * _n[_qp]);
+      Real pgradderivpgradeta = -2.0 * (_n[_qp] * _gradeta_phi[_j][_qp]) * divn - 2.0 * _n[_qp] * (_grad_n[_qp] * _gradeta_phi[_j][_qp] + _gradeta_grad_phi[_j][_qp] * _n[_qp]);
       Real pepenpgradeta = (- _dhdu[_qp]) * ( 2.0 * _penaltyconstfactor * (_n[_qp] * _gradeta_phi[_j][_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * pgradderivpgradeta;
       return pepenpgradeta * exp( epen ) * _Fbv[_qp] * _test[_i][_qp];
     }
