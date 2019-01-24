@@ -59,8 +59,6 @@ Kineticslc::computeQpOffDiagJacobian(unsigned int jvar)
     //    return 0;
     return -2.0 * _constfactor * _grad_ny[_qp] * _grad_phi[_j][_qp] * exp(-epen) * _Fbv[_qp] * _test[_i][_qp];
   else
-    //    return -_constfactor * (_grad_phi[_j][_qp] * _grad_nx[_qp] + _grad_nx[_qp] * _grad_phi[_j][_qp]) * \
-  //      exp( -epen ) * _F[_qp] * _test[_i][_qp];
     {
       const unsigned int cvar = mapJvarToCvar(jvar);
       return exp(-epen) * (*_dFbvdarg[cvar])[_qp] * _phi[_j][_qp] * _test[_i][_qp];
