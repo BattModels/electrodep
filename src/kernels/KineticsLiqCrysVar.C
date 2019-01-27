@@ -64,8 +64,6 @@ KineticsLiqCrysVar::computeQpJacobian()
   Real epen = (- _dhdu[_qp]) * (_constfactor * _grad_n[_qp].contract(_grad_n[_qp]) + _penaltyconstfactor * (_n[_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * gradderiv;
   Real pepenpuj = -_d2hdu2[_qp] * _phi[_j][_qp] * (_constfactor * _grad_n[_qp].contract(_grad_n[_qp]) + _penaltyconstfactor * (_n[_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp])) - _dhdu[_qp] * _phi[_j][_qp] * _penaltyconstfactor *  gradderiv;
   return pepenpuj * exp(epen) * _Fbv[_qp] * _test[_i][_qp] + exp( epen ) * _dFbvdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
-  //  return ( -_dhdu[_qp] * _constfactor * _grad_n[_qp].contract(_grad_n[_qp]) ) * exp(epen) * _dFbvdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
-  //return ( -_dhdu[_qp] * _constfactor * _grad_n[_qp].contract(_grad_n[_qp]) ) * _phi[_j][_qp] * exp(epen) * _Fbv[_qp] * _test[_i][_qp] + exp(epen) * _dFbvdu[_qp] * _phi[_j][_qp] * _test[_i][_qp];
 }
 
 Real
