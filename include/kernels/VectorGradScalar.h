@@ -16,13 +16,13 @@ class VectorGradScalar : public VectorKernel
  protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
-  //  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   const Real & _coef;
   const VariableGradient & _grad_eta;
-  //  const unsigned _eta_id;
-  //  MooseVariable & _eta_var;
-  //  const VariablePhiGradient & _grad_standard_phi;
+  const unsigned _scalar_id;
+  MooseVariable & _scalar_var;
+  const VariablePhiGradient & _grad_standard_phi;
 };
 
 #endif /* VECTORGRADSCALAR_H */

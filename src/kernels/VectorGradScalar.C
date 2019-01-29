@@ -24,7 +24,10 @@ validParams<VectorGradScalar>()
 VectorGradScalar::VectorGradScalar(const InputParameters & parameters)
   : VectorKernel(parameters), 
     _coef(getParam<Real>("coef")),
-    _grad_eta(coupledGradient("scalar"))
+    _grad_eta(coupledGradient("scalar")),
+    _scalar_id(coupled("scalar")),
+    _scalar_var(*getVar("scalar", 0)),
+    _grad_standard_phi(_assembly.gradPhi(_scalar_var))
 {
 }
 
@@ -38,4 +41,13 @@ Real
 VectorGradScalar::computeQpJacobian()
 {
   return 0;
+}
+
+Real
+VectorGradScalar::computeQpOffDiagJacobian(unsigned jvar)
+{
+  if (jvar == _scalar_id)
+    return -_coef * _grad_standard_phi[_j][_qp] * _test[_i][_qp];
+  else
+    return 0;
 }
