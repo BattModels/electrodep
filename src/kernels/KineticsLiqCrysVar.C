@@ -78,7 +78,6 @@ KineticsLiqCrysVar::computeQpOffDiagJacobian(unsigned int jvar)
       Real pgradderivpn = -2.0 * (_n_phi[_j][_qp] * _gradeta[_qp]) * divn - 2.0 * (_n[_qp] * _gradeta[_qp]) * divphi  - 2.0 * _n_phi[_j][_qp] * (_grad_n[_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n[_qp]) - 2.0 * _n[_qp] * ( _n_grad_phi[_j][_qp] * _gradeta[_qp] + _grad_gradeta[_qp] * _n_phi[_j][_qp]);
       Real pepenpn = (- _dhdu[_qp]) * ( 2.0 * _constfactor * _n_grad_phi[_j][_qp].contract(_grad_n[_qp]) + 2.0 * _penaltyconstfactor * (_n_phi[_j][_qp] * _gradeta[_qp]) * (_n[_qp] * _gradeta[_qp]) ) + _penaltyconstfactor * (1.0 - _h[_qp]) * pgradderivpn;
       return pepenpn * exp( epen ) * _Fbv[_qp] * _test[_i][_qp];
-      //return 2.0 * (1.0 - _h[_qp]) * _constfactor * ( _vec_grad_phi[_j][_qp].contract(_grad_n[_qp]) ) * exp( epen ) * _Fbv[_qp] * _test[_i][_qp];
     }
   else if(jvar == _gradeta_id)
     {
