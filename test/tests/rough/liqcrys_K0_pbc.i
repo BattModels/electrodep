@@ -113,7 +113,7 @@
 #  active = 'bottom_eta top_eta left_eta right_eta bottom_w top_w left_w right_w left_pot right_pot'
   [./Periodic]
     [./eta]
-    variable = 'eta'
+    variable = 'eta w pot'
     auto_direction = y
     [../]
   [../]
@@ -180,18 +180,18 @@
 []
 
 [Kernels]
-  active =  'gradeta w_dot Diffusion1 Diffusion2 poteqn coupled_pot BV coupled_etadot AC_bulk AC_int Noiseeta e_dot'
+  active =  'gradeta gradeta_setval w_dot Diffusion1 Diffusion2 poteqn coupled_pot BV coupled_etadot AC_bulk AC_int Noiseeta e_dot'
   [./gradeta]
   type = VectorCoeffReaction
   variable = gradeta
   coefficient = 1.0
   [../]
-  [./gradeta_grad]
-  type = GradScalar
+  [./gradeta_setval]
+  type = VectorGradScalar
   variable = gradeta
   scalar = eta
   coef = 1.0
-  [../]
+  [../]  
   [./nlc_diff]
   type = VectorCoefDiffusion #Take care of the minus sign when adding any other terms
   variable = nlc
