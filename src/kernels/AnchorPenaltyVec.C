@@ -1,5 +1,6 @@
 
 #include "AnchorPenaltyVec.h"
+#include "Assembly.h"
 
 registerMooseObject("electrodepApp", AnchorPenaltyVec);
 
