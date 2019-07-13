@@ -8,7 +8,7 @@ The standard input and analysis files for reproducing the results are in `/test/
 
 "Fork electrodep" to create a new MOOSE-based application.
 
-For more information see: [http://mooseframework.org/create-an-app/](http://mooseframework.org/create-an-app/)
+For more information see: [https://mooseframework.inl.gov/](https://mooseframework.inl.gov/)
 
 ## How to cite
 
