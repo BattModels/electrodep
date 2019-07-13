@@ -1,5 +1,6 @@
 #include "KineticsLiqCrysVar.h"
 #include <cmath>
+#include "Assembly.h"
 
 registerMooseObject("electrodepApp", KineticsLiqCrysVar);
 
