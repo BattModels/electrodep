@@ -4,6 +4,8 @@ Data and analysis of results for the paper: "Dendrite suppression of metal elect
 
 `electrodep` is a MOOSE-based application to simulate metal electrodeposition using a phase-field model
 
+The standard input and analysis files for reproducing the results are in `/test/tests/paper-files` folder.
+
 "Fork electrodep" to create a new MOOSE-based application.
 
 For more information see: [http://mooseframework.org/create-an-app/](http://mooseframework.org/create-an-app/)
