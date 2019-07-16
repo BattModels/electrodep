@@ -1,7 +1,3 @@
-# implementation of the grand-potential phase-field model based on M.Plapp PRE 84,031601(2011)+D.Cogswell PRE92, 011301(R) (2015)
-#1;95;0c w is the chemical potential, eta is the phase-field, pot is the electric potential, op is the overpotential
-# add Bulter-Volmer equation with non-linear kinetics by ZJH Oct 2nd 2017
-# major modifs and liquid electrolyte with orientation order by Zeeshan Ahmad
 [Mesh]
   type = GeneratedMesh
   dim = 2
@@ -22,18 +18,12 @@
 [Variables]
   active = 'w eta pot nlc lambda gradeta' 
   [./w]
-# order=SECOND
-# family= LAGRANGE
   scaling = 1e+3
   [../]
   [./eta]
-#  order=SECOND
-#  family= HERMITE
   scaling = 1e+4
   [../]
   [./pot]
-# order=SECOND
-# family= LAGRANGE
   [../]
   [./nlc]
   family = LAGRANGE_VEC
@@ -82,10 +72,6 @@
 #value=0.001*x-0.1
   value = -0.1*(1.0-tanh((x-20)*2))
   [../]
-#  [./ic_func_op]
-#  type = ParsedFunction
-#  value = 0
-#  [../]
 []
 
 [ICs]
@@ -371,12 +357,6 @@
 #  M0=10^12*D    B=zF/(1000*R*T)   length 1 um, time 1s, energy is normalized by RT
 # t transference number D+=D/(n*(1-t)) D-=D/(n*t)
   [../]
-#  [./constfactor_lc]
-#  type = ParsedMaterial
-#  f_name = constfactor
-#  function = '1/2 * K * Liplusm3permol / RT'
-#  material_property_names = 'K Liplusm3permol RT'
-#  [../]
   [./liquid_GrandPotential]
   type = DerivativeParsedMaterial
   function = 'ul - RT * log(1 + exp((w - el)/RT))'
@@ -535,19 +515,6 @@
   function = 'exp(lcovp)'
   outputs = other
   [../]
-#  [./mask_material]
-#  type = ParsedMaterial
-#  prop_names = 'mask_prop'
-#  prop_values = 'mask_func'
-#  [../]
-#  [./mask_func]
-#  type = ParsedMaterial
-#  f_name = mask_func
-#  args = eta
-#  material_property_names = ''
-#  function = 'if( eta<0.8, if(eta>0.2, 1.0, 0.0), 0.0 )'
-#  outputs = other
-#  [../]
 []
 
 [Postprocessors]
