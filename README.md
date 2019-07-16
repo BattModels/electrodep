@@ -6,9 +6,22 @@ Data and analysis of results for the paper: "Dendrite suppression of metal elect
 
 The standard input and analysis files for reproducing the results are in `/test/tests/paper-files` folder.
 
-"Fork electrodep" to create a new MOOSE-based application.
+## How to run
 
-For more information see: [https://mooseframework.inl.gov/](https://mooseframework.inl.gov/)
+Install MOOSE framework from [https://mooseframework.inl.gov/](https://mooseframework.inl.gov/)
+
+`git clone https://github.com/ahzeeshan/electrodep.git`
+
+`cd electrodep`
+
+`make -j4`
+
+`cp electrodep-opt test/tests/paper-files/`
+
+`cd test/tests/paper-files/`
+
+`mpirun -np 24 ./electrodep-opt -i liqcrys_Kp_p_1.0E+01_c_1.0E+00_paper.i`
+
 
 ## How to cite
 
