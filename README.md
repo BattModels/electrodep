@@ -9,19 +9,14 @@ The standard input and analysis files for reproducing the results are in `/test/
 ## How to run
 
 Install MOOSE framework from [https://mooseframework.inl.gov/](https://mooseframework.inl.gov/)
-
-`git clone https://github.com/ahzeeshan/electrodep.git`
-
-`cd electrodep`
-
-`make -j4`
-
-`cp electrodep-opt test/tests/paper-files/`
-
-`cd test/tests/paper-files/`
-
-`mpirun -np 24 ./electrodep-opt -i liqcrys_Kp_p_1.0E+01_c_1.0E+00_paper.i`
-
+```
+git clone https://github.com/ahzeeshan/electrodep.git
+cd electrodep
+make -j4
+cp electrodep-opt test/tests/paper-files/
+cd test/tests/paper-files/
+mpirun -np 24 ./electrodep-opt -i liqcrys_Kp_p_1.0E+01_c_1.0E+00_paper.i
+```
 
 ## How to cite
 
