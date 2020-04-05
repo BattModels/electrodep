@@ -1,6 +1,6 @@
 # electrodep
 
-Data and analysis of results for the paper: "Dendrite suppression of metal electrodeposition with liquid crystalline electrolytes" [arXiv:1907.04441](https://arxiv.org/abs/1907.04441)
+Codes, data and analysis of results for the paper: "Dendrite suppression of metal electrodeposition with liquid crystalline electrolytes" [arXiv:1907.04441](https://arxiv.org/abs/1907.04441)
 
 `electrodep` is a MOOSE-based application to simulate metal electrodeposition using a phase-field model
 
