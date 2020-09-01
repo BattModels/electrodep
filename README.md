@@ -8,7 +8,7 @@ The standard input and analysis files for reproducing the results are in `/test/
 
 ## How to run
 
-Install MOOSE framework from [https://mooseframework.inl.gov/](https://mooseframework.inl.gov/)
+Install MOOSE framework from [https://www.mooseframework.org/getting_started/index.html](https://www.mooseframework.org/getting_started/index.html)
 ```
 git clone https://github.com/ahzeeshan/electrodep.git
 cd electrodep
