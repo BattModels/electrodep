@@ -6,6 +6,9 @@ Codes, data and analysis of results for the paper: "Dendrite suppression of meta
 
 The standard input and analysis files for reproducing the results are in `/test/tests/paper-files` folder.
 
+### Liquid Crystalline Electrolyte Battery Phase-Field Simulation Data
+The data that support the findings of the paper are also also available in the form of `.mat` and `.m` files 
+
 ## How to run
 
 Install MOOSE framework from [https://www.mooseframework.org/getting_started/index.html](https://www.mooseframework.org/getting_started/index.html)
