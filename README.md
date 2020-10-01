@@ -7,7 +7,7 @@ Codes, data and analysis of results for the paper: "Design rules for liquid crys
 The standard input and analysis files for reproducing the results are in `/test/tests/paper-files` folder.
 
 ### Liquid Crystalline Electrolyte Battery Phase-Field Simulation Data
-The data that support the findings of the paper are also also available in the form of `.mat` and `.m` files 
+The data that support the findings of the paper are also also available in the form of `.mat` and `.m` files in the directory `LC-data`.
 
 ## How to run
 
